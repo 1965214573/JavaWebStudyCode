@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主页信息</title>
+    <link rel="stylesheet" href="./layui/css/layui.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .info-box {
+            width: 400px;
+            height: 400px;
+            border-radius: 10px;
+            box-shadow: 0 0 5px 0 black;
+            margin: 60px auto 0;
+            padding: 40px 20px;
+        }
+        .head {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 20px;
+        }
+    </style>
+</head>
+<body>
+<h1 align="center">个人主页</h1>
+<div class="info-box layui-form">
+
+    <div class="layui-input-block head">
+        <img style="object-fit:cover; width: 100px;height: 100px" id="headFile">
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">账号</label>
+        <div class="layui-input-block">
+            <input class="layui-input" type="text" id="name">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">密码</label>
+        <div class="layui-input-block">
+            <input class="layui-input" type="text" id="password">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">生日</label>
+        <div class="layui-input-block">
+            <input class="layui-input" type="text" id="birthday">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" id="logout" >退出登录</button>
+
+        </div>
+    </div>
+
+
+</div>
+</body>
+<script src="./layui/layui.js"></script>
+<script>
+    layui.use(['layer', 'element'], function () {
+        let layer = layui.layer
+        let element = layui.element
+        let $ = layui.$
+
+        let user = JSON.parse(localStorage.getItem('user'))
+        if (user === null) {
+            window.location.href = './views/LoginPage.html'
+        } else {
+
+            let replace = user.filePath.substring(user.filePath.lastIndexOf('\\') + 1)
+
+            // 数据渲染
+            $('#headFile').attr('src', './image/'+ replace)
+            $('#name').val(user.username)
+            $('#password').val(user.password)
+            $('#birthday').val(user.birthday)
+
+
+            $('#logout').click(function () {
+                localStorage.removeItem('user')
+                window.location.href = './views/LoginPage.html'
+            })
+
+        }
+    })
+
+
+
+</script>
+</html>

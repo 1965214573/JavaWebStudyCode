@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册页面</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .login-form {
+            width: 400px;
+            height: 360px;
+            border-radius: 10px;
+            box-shadow: 0 0 5px 0 black;
+            margin: 60px auto 0;
+            padding: 40px 20px;
+        }
+        .user-head-image {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+<h1 align="center">注册界面</h1>
+<div class="login-form">
+    <div class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="username">账号：</label>
+            <div class="layui-input-block">
+                <input type="text" id="username" name="username" required  lay-verify="username" placeholder="请输入账号" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="password">密码：</label>
+            <div class="layui-input-block">
+                <input type="password" id="password" name="password" required  lay-verify="password" placeholder="请输入密码" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="birthday">生日：</label>
+            <div class="layui-input-block">
+                <input type="text" id="birthday" name="birthday" required  lay-verify="required" placeholder="请选择日期" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-input-block layui-hide">
+            <input type="text" id="filePath" name="filePath">
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="userInfo">立即注册</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                <a class="layui-btn layui-btn-warm" href="./LoginPage.html">返回登录</a>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-warm layui-inline" id="file-upload">
+                <i class="layui-icon">&#xe67c;</i>上传头像
+            </button>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="user-head-image layui-input-block" id="head-img"></div>
+    </div>
+
+</div>
+</body>
+<script src="../layui/layui.js"></script>
+<script>
+
+    layui.use(['laydate', 'upload', 'form'], function () {
+        let laydate = layui.laydate
+        let upload = layui.upload
+        let form = layui.form
+        let $ = layui.$
+
+        laydate.render({
+            elem: '#birthday'
+        })
+
+        let uploadInst = upload.render({
+            elem: '#file-upload',
+            acceptMime: 'image/*',
+            size: 1024 * 2,
+            url: '../FileUploadServlet',
+            choose: function(obj){
+                //将每次选择的文件追加到文件队列
+                var files = obj.pushFile();
+                //预读本地文件，如果是多文件，则会遍历。
+                obj.preview(function(index, file, result){
+                    //图片插入到选择框中，
+                    $("#head-img").html("<img style='object-fit:cover' src = '"+result+"' height='100px;' />");
+                });
+            },
+            done: function (res) {
+                $("#filePath").val(res.data.src)
+            },
+            error: function(){
+                //请求异常回调
+            }
+        })
+
+        form.verify({
+            username: function (value, item) {
+                if (value === '') {
+                    return '账号不能为空！'
+                }
+            },
+            password: [
+                /^[\S]{6,12}$/
+                ,'密码必须6到12位，且不能出现空格'
+            ]
+        })
+
+        form.on('submit(userInfo)', function (data) {
+            $.post(
+                "../RegisterServlet",
+                data.field,
+                function (data, status) {
+                    window.location.href = './LoginPage.html'
+                }
+            )
+        })
+    })
+</script>
+</html>

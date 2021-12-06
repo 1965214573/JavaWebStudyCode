@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录页</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .login-form {
+            width: 400px;
+            height: 180px;
+            border-radius: 10px;
+            box-shadow: 0 0 5px 0 black;
+            margin: 60px auto 0;
+            padding: 40px 20px;
+        }
+    </style>
+</head>
+<body>
+<h1 align="center">登录界面</h1>
+<div class="login-form">
+    <div class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="username">账号：</label>
+            <div class="layui-input-block">
+                <input type="text" id="username" name="username" required  lay-verify="username" placeholder="请输入账号" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" for="password">密码：</label>
+            <div class="layui-input-block">
+                <input type="password" id="password" name="password" required  lay-verify="password" placeholder="请输入密码" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="userInfo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                <a class="layui-btn layui-btn-warm" href="./RegistrationPage.html">注册</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../layui/layui.js"></script>
+<script>
+
+    layui.use(['form', 'layer'], function () {
+        let form = layui.form
+        let layer = layui.layer
+        let $ = layui.$
+
+        form.verify({
+            username: function (value, item) {
+                if (value === '') {
+                    return '账号不能为空！'
+                }
+            },
+            password: [
+                /^[\S]{6,12}$/
+                ,'密码必须6到12位，且不能出现空格'
+            ]
+        })
+
+        form.on('submit(userInfo)', function (data) {
+            $.post(
+                "../LoginServlet",
+                data.field,
+                function (data, status) {
+                    // 保存信息
+                    if (data.code === 0) {
+                        localStorage.setItem("user", JSON.stringify(data.data.userInfo))
+                        window.location.href = '../index.html'
+                    } else {
+                        layer.msg(data.msg, function () {
+                            //
+                        })
+                    }
+                }
+            )
+        })
+    })
+
+</script>
+</html>
