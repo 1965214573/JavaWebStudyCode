@@ -13,5 +13,12 @@
   <body>
   <a href="./loginPage">点击登录</a>
   <a href="./chonghai">病害页面</a>
+  <%
+    request.setAttribute("test", "hello");
+  %>
+  <hr>
+  el表达式测试
+  <hr>
+  ${test}
   </body>
 </html>

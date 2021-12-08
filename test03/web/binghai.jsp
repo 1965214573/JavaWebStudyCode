@@ -7,15 +7,14 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <title>病虫害一览</title>
     <link rel="stylesheet" href="css/css.css">
 </head>
 <body>
-<%
-    List<Binghai> binghaiList = (List<Binghai>) request.getAttribute("binghaiList");
-%>
+
 <div class="connoisseur">
     <div class="conform">
         <form>
@@ -48,34 +47,26 @@
                 <td style="width: 170px" class="tdColor">操作</td>
             </tr>
 
-            <%
-                if (binghaiList != null) {
-                    for (Binghai binghai : binghaiList) {
-            %>
-                        <tr>
-                            <td><%=binghai.getName()%></td>
-                            <td><%=binghai.getMainDamage()%></td>
-                            <td><%=binghai.getOccurredLaw()%></td>
-                            <td>
-                                <a href="binghaimsg.html">
-                                    <img class="operation" src="img/find.png">
-                                </a>
-                                <img class="operation delban" src="img/delete.png">
-                            </td>
-                        </tr>
-            <%
-                    }
-                } else {
-
-            %>
-
-            <tr>
-                <td colspan='4'>暂无数据</td>
-            </tr>
-
-            <%
-                }
-            %>
+            <c:if test="${binghaiList != null}">
+                <c:forEach var="binghai" items="${binghaiList}">
+                    <tr>
+                        <td>${binghai.name}</td>
+                        <td>${binghai.mainDamage}</td>
+                        <td>${binghai.occurredLaw}</td>
+                        <td>
+                            <a href="binghaimsg.html">
+                                <img class="operation" src="img/find.png">
+                            </a>
+                            <img class="operation delban" src="img/delete.png">
+                        </td>
+                    </tr>
+                </c:forEach>
+            </c:if>
+            <c:if test="${binghaiList == null}">
+                <tr>
+                    <td colspan='4'>暂无数据</td>
+                </tr>
+            </c:if>
 
         </table>
         <div class="paging">此处是分页</div>
